@@ -1,0 +1,22 @@
+{
+  "name": "slack-notify-external",
+  "version": "1.0.0",
+  "description": "This action sends a slack message using an external service",
+  "main": "send-message.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "ncc build send-message.js -o dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@types/node": "^16.11.9",
+    "@vercel/ncc": "^0.32.0",
+    "ts-node": "^10.4.0",
+    "typescript": "~4.5.2",
+    "superagent": "^6.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,44 @@
+name: 'Slack Notify Action'
+description: 'Send a slack message using an external service'
+inputs:
+  github-token:
+    description: github access token
+    required: false
+    default: ${{ github.token }}
+  service-url:
+    description: external service url
+    required: true
+  message-type:
+    description: slack message type slack_direct_message, slack_channel, or email
+    required: true
+  message-body:
+    description: slack message body
+    required: true
+  slack-recipient-github-user:
+    description: slack recipient github user name
+    required: true
+  slack-recipient-aws-user:
+    description: slack recipient aws user name
+    required: true
+  slack-recipient-slack-channel:
+    description: slack channel name
+    required: true
+  slack-recipient-slack-user:
+    description: slack recipient user name
+    required: true
+  slack-recipient-email:
+    description: slack recipient email name
+    required: true
+  blocks:
+    description: Slack json structure, see https://api.slack.com/reference/block-kit/blocks
+    required: false
+  icon-emoji:
+    description: Slack icon to display with Slack message
+    required: false
+  bot-user-name:
+    description:  Bot name to display with message
+    required: false
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
