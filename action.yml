@@ -20,7 +20,7 @@ inputs:
   slack-recipient-name:
     description: slack recipient user name, acion-login can be env.GITHUB_ACTOR, comment.user.login, sender.user.login, issue.user.login
     required: true
-  blocks:
+  slack-block-json:
     description: Slack json structure, see https://api.slack.com/reference/block-kit/blocks
     required: false
   icon-emoji:
