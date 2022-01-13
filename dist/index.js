@@ -21254,51 +21254,85 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 const superAgent = __nccwpck_require__(1524);
+const fs =__nccwpck_require__(7147);
+const util = __nccwpck_require__(3837);
+const readFileAsync = util.promisify(fs.readFile);
+
+async function getJsonBlock(path) {
+  try {
+    const buffer = await readFileAsync(path);
+
+    return JSON.parse(buffer.toString());
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+}
 
 (async () => {
-
   try {
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-    console.log(payload);
+      title = core.getInput('message-title') || 'message title';
+      const serviceUrl = core.getInput('service-url') || process.env.SERVICE_URL;
+      const messageType = core.getInput('message-type') || 'slack_direct_message';
+      const messageBody = core.getInput('message-body') || 'slack message body';
+      const iconEmoji = core.getInput('icon-emoji') || ':butterbot:';
+      const botName = core.getInput('bot-user-name') || 'notify bot';
+      const jsonBlockFile = core.getInput('slack-block-json') || './messageBlock.json';
+      const slackRecipientType = core.getInput('slack-recipient-type') || 'github-user';
+      const slackRecipientName = core.getInput('slack-recipient-name');
 
-    let repoName;
-    let prNumber;
-    let repoOwner;
-    let serviceUrl;
-    let messageType;
-    let messageBody;
-    let slackRecipient;
-
-    if (github.context.payload.action === 'created' && github.context.payload.comment !== undefined) {
-      commentString = github.context.payload.comment.body;
-      repoName = github.context.payload.repository.name;
-      prNumber = github.context.payload.issue.number;
-      repoOwner = github.context.payload.organization.login;
-      serviceUrl = core.getInput('service-url');
-      messageType = core.getInput('message-type') || 'slack_direct_message';
-      messageBody = core.getInput('message-body') || 'slack message body';
-      slackRecipient = core.getInput('slack-recipient-github-user') || github.context.payload.user.login;
+      const messageStructure = {};
+      messageStructure.body = messageBody;
+      messageStructure.message_type = messageType;
+      if (title) {
+        messageStructure.title = title;
+      }
+      if (iconEmoji) {
+        messageStructure.icon_emoji = iconEmoji;
+      }
+      if (botName) {
+        messageStructure.bot_user_name = botName;
+      }
+      if (jsonBlockFile) {
+        messageStructure.blocks = await getJsonBlock(jsonBlockFile);
+      }
+      if (slackRecipientType === 'action-login') {
+        if (slackRecipientName === 'comment.user.login') {
+          messageStructure.github_user_name = github.context.payload.comment.user.login;
+        }
+        if (slackRecipientName === 'user.sender.login') {
+          messageStructure.github_user_name = github.context.payload.sender.user.login;
+        }
+        if (slackRecipientName === 'issue.user.login') {
+          messageStructure.github_user_name = github.context.payload.issue.user.login;
+        }
+        if (slackRecipientName === 'env.GITHUB_ACTOR') {
+          messageStructure.github_user_name = process.env.GITHUB_ACTOR;
+        }
+      }
+      if (slackRecipientType === 'github-user') {
+        messageStructure.github_user_name = slackRecipientName;
+      }
+      if (slackRecipientType === 'slack-user') {
+        messageStructure.slack_user_name = slackRecipientName;
+      }
+      if (slackRecipientType === 'slack-channel') {
+        messageStructure.slack_channel_name = slackRecipientName;
+      }
+      if (slackRecipientType === 'email') {
+        messageStructure.email = slackRecipientName;
+      }
+      if (slackRecipientType === 'aws-user') {
+        messageStructure.aws_user_name = slackRecipientName;
+      }
 
       try {
-        // return await Promise.all(
-        //   notifyList.map(async (user) => {
-            return superAgent.post(serviceUrl)
-              .set('Content-Type', 'application/json')
-              .send({
-                body: messageBody,
-                message_type: messageType,
-                icon_emoji: ':chomp:',
-                bot_user_name: 'testing bot',
-                github_user_name: slackRecipient,
-                spam_timeout: 0,
-                // blocks: msgBlocks
-              });
-          // }))
+        return superAgent.post(serviceUrl)
+          .set('Content-Type', 'application/json')
+          .send(messageStructure);
       } catch (err) {
         console.log(err.message);
         return process.exit(1);
       }
-    }
   } catch (error) {
     core.setFailed(error.message);
     process.exit(1);
