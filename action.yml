@@ -14,20 +14,11 @@ inputs:
   message-body:
     description: slack message body
     required: true
-  slack-recipient-github-user:
-    description: slack recipient github user name
+  slack-recipient-type:
+    description: slack recipient github user type, action-login, github-user, aws-user, slack-channel, slack-user, email
     required: true
-  slack-recipient-aws-user:
-    description: slack recipient aws user name
-    required: true
-  slack-recipient-slack-channel:
-    description: slack channel name
-    required: true
-  slack-recipient-slack-user:
-    description: slack recipient user name
-    required: true
-  slack-recipient-email:
-    description: slack recipient email name
+  slack-recipient-name:
+    description: slack recipient user name, acion-login can be env.GITHUB_ACTOR, comment.user.login, sender.user.login, issue.user.login
     required: true
   blocks:
     description: Slack json structure, see https://api.slack.com/reference/block-kit/blocks
