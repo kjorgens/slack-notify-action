@@ -23,9 +23,9 @@ async function getJsonBlock(path) {
       const messageBody = core.getInput('message-body') || 'slack message body';
       const iconEmoji = core.getInput('icon-emoji') || ':butterbot:';
       const botName = core.getInput('bot-user-name') || 'notify bot';
-      const jsonBlockFile = core.getInput('slack-block-json') || './messageBlock.json';
-      const slackRecipientType = core.getInput('slack-recipient-type') || 'github-user';
-      const slackRecipientName = core.getInput('slack-recipient-name');
+      const jsonBlockFile = core.getInput('slack-block-json');
+      const slackRecipientType = core.getInput('slack-recipient-type') || 'action-login';
+      const slackRecipientName = core.getInput('slack-recipient-name') || 'env.GITHUB_ACTOR';
 
       const messageStructure = {};
       messageStructure.body = messageBody;
