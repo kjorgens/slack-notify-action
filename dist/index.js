@@ -21271,7 +21271,7 @@ async function getJsonBlock(path) {
 (async () => {
   const payload = JSON.stringify(github.context.payload, undefined, 2);
   console.log(payload);
-yuy
+
   try {
       title = core.getInput('message-title') || 'message title';
       const serviceUrl = core.getInput('service-url') || process.env.SERVICE_URL;
