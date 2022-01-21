@@ -73,7 +73,7 @@ async function getJsonBlock(path) {
       }
 
       try {
-        return superAgent.post(serviceUrl)
+        await superAgent.post(serviceUrl)
           .set('Content-Type', 'application/json')
           .send(messageStructure);
       } catch (err) {
