@@ -21269,8 +21269,8 @@ async function getJsonBlock(path) {
 }
 
 (async () => {
-  const payload = JSON.stringify(github.context.payload, undefined, 2);
-  console.log(payload);
+  // const payload = JSON.stringify(github.context.payload, undefined, 2);
+  // console.log(payload);
 
   try {
       title = core.getInput('message-title') || 'message title';
@@ -21298,6 +21298,7 @@ async function getJsonBlock(path) {
       if (jsonBlockFile) {
         messageStructure.blocks = await getJsonBlock(jsonBlockFile);
       }
+
       if (slackRecipientType === 'action-login') {
         if (slackRecipientName === 'comment.user.login') {
           messageStructure.github_user_name = github.context.payload.comment.user.login;
@@ -21332,6 +21333,7 @@ async function getJsonBlock(path) {
       }
 
       try {
+        console.log(JSON.stringify(messageStructure));
         await superAgent.post(serviceUrl)
           .set('Content-Type', 'application/json')
           .send(messageStructure);
