@@ -21281,7 +21281,7 @@ async function getJsonBlock(path) {
       const slackRecipientName = core.getInput('slack-recipient-name') || 'env.GITHUB_ACTOR';
 
       const messageStructure = {};
-      messageStructure.body = messageBody;
+      messageStructure.body = messageBody || 'no body specified?';
       messageStructure.message_type = messageType;
       if (title) {
         messageStructure.title = title;
