@@ -16,6 +16,9 @@ async function getJsonBlock(path) {
 }
 
 (async () => {
+  const payload = JSON.stringify(github.context.payload, undefined, 2);
+  console.log(payload);
+yuy
   try {
       title = core.getInput('message-title') || 'message title';
       const serviceUrl = core.getInput('service-url') || process.env.SERVICE_URL;
@@ -25,7 +28,7 @@ async function getJsonBlock(path) {
       const botName = core.getInput('bot-user-name') || 'notify bot';
       const jsonBlockFile = core.getInput('slack-block-json');
       const slackRecipientType = core.getInput('slack-recipient-type') || 'action-login';
-      const slackRecipientName = core.getInput('slack-recipient-name') || 'env.GITHUB_ACTOR';
+      const slackRecipientName = core.getInput('slack-recipient-name') || 'issue.user.login';
 
       const messageStructure = {};
       messageStructure.body = messageBody || 'no body specified?';
@@ -52,6 +55,9 @@ async function getJsonBlock(path) {
         if (slackRecipientName === 'issue.user.login') {
           messageStructure.github_user_name = github.context.payload.issue.user.login;
         }
+        if (slackRecipientName === 'pull_request.user.login') {
+          messageStructure.github_user_name = github.context.payload.pull_request.user.login;
+        }
         if (slackRecipientName === 'env.GITHUB_ACTOR') {
           messageStructure.github_user_name = process.env.GITHUB_ACTOR;
         }
@@ -77,7 +83,7 @@ async function getJsonBlock(path) {
           .set('Content-Type', 'application/json')
           .send(messageStructure);
       } catch (err) {
-        console.log(err.message);
+        core.setFailed(err.message);
         return process.exit(1);
       }
   } catch (error) {
